@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Max — Official Website & AI Ordering</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e11d48;
+            --primary-hover: #be123c;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-gold: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        /* Header / Navbar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 4rem;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .order-btn {
+            background: var(--primary);
+            color: white;
+            padding: 0.7rem 1.6rem;
+            border-radius: 30px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
+            transition: all 0.3s;
+        }
+
+        .order-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 10rem 4rem 6rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 85vh;
+            background: radial-gradient(circle at 70% 30%, rgba(225, 29, 72, 0.15), transparent 50%);
+        }
+
+        .hero-text {
+            max-width: 600px;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-text h1 span {
+            color: var(--primary);
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-gold);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        /* Menu Highlights */
+        .menu-section {
+            padding: 4rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .menu-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .price-tag {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
+
+        /* Floating AI Chat Widget */
+        .chat-widget-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #e11d48, #be123c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(225, 29, 72, 0.5);
+            z-index: 999;
+            transition: all 0.3s;
+        }
+
+        .chat-widget-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Chat Window */
+        .chat-window {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            width: 380px;
+            height: 520px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            animation: slideUp 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #e11d48, #9f1239);
+            padding: 1.2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .msg {
+            padding: 0.8rem 1rem;
+            border-radius: 16px;
+            font-size: 0.92rem;
+            max-width: 85%;
+            line-height: 1.4;
+        }
+
+        .msg-bot {
+            background: #334155;
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg-user {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-footer {
+            padding: 0.8rem;
+            background: #0f172a;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-footer input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: white;
+            outline: none;
+        }
+
+        .chat-footer button {
+            background: var(--primary);
+            border: none;
+            color: white;
+            padding: 0 1.2rem;
+            border-radius: 20px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Pizza Max</div>
+        <ul class="nav-links">
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#deals">Deals</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+        <button class="order-btn" onclick="toggleChat()">Order Online AI</button>
+    </header>
+
+    <section class="hero">
+        <div class="hero-text">
+            <div class="hero-badge">Powered by RestaurantOS Multi-Agent AI</div>
+            <h1>Craving Fresh <span>Pizza Max</span>? Order with AI!</h1>
+            <p>Experience seamless multi-channel ordering. Chat with our intelligent AI Assistant to order your favorite pizzas, sides, and pasta instantly!</p>
+            <button class="order-btn" style="font-size: 1.1rem; padding: 0.9rem 2.2rem;" onclick="toggleChat()">Order Now with AI Assistant</button>
+        </div>
+    </section>
+
+    <section class="menu-section" id="menu">
+        <h2 class="section-title">Popular Flavours</h2>
+        <div class="menu-grid">
+            <div class="menu-card">
+                <h3>Ranch Pizza</h3>
+                <p>Ranch sauce with tender chicken chunks, onions, and extra cheese.</p>
+                <div class="price-tag">Rs. 1,590 (Med)</div>
+            </div>
+            <div class="menu-card">
+                <h3>Sriracha Pizza</h3>
+                <p>Spicy Sriracha sauce topped with savory chicken and mozzarella.</p>
+                <div class="price-tag">Rs. 1,590 (Med)</div>
+            </div>
+            <div class="menu-card">
+                <h3>Malai Boti Pizza</h3>
+                <p>Tender chicken malai boti with creamy white sauce and herbs.</p>
+                <div class="price-tag">Rs. 1,590 (Med)</div>
+            </div>
+            <div class="menu-card">
+                <h3>Tangy Wings</h3>
+                <p>Crispy juicy wings tossed in signature tangy hot sauce (6 pcs).</p>
+                <div class="price-tag">Rs. 490</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating AI Chat Widget -->
+    <div class="chat-widget-btn" onclick="toggleChat()">Chat</div>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <h4>Pizza Max AI Assistant</h4>
+            <span style="cursor:pointer;" onclick="toggleChat()">✖</span>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="msg msg-bot">Hi! Welcome to Pizza Max. What would you like to order today?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="userInput" placeholder="e.g. 1 Medium Ranch Pizza..." onkeypress="handleKey(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:8000/api/chat";
+
+        // Generate a unique session ID for this browser tab
+        let SESSION_ID = sessionStorage.getItem("ros_session_id");
+        if (!SESSION_ID) {
+            SESSION_ID = "web-" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+            sessionStorage.setItem("ros_session_id", SESSION_ID);
+        }
+
+        function toggleChat() {
+            const window = document.getElementById("chatWindow");
+            window.style.display = window.style.display === "flex" ? "none" : "flex";
+        }
+
+        function handleKey(e) {
+            if (e.key === "Enter") sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById("userInput");
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatBody = document.getElementById("chatBody");
+
+            // User Message
+            const userMsg = document.createElement("div");
+            userMsg.className = "msg msg-user";
+            userMsg.innerText = text;
+            chatBody.appendChild(userMsg);
+            input.value = "";
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // Bot Thinking
+            const botMsg = document.createElement("div");
+            botMsg.className = "msg msg-bot";
+            botMsg.innerText = "Processing your request...";
+            chatBody.appendChild(botMsg);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message: text,
+                        channel: "website",
+                        customer_name: "",
+                        customer_phone: "",
+                        customer_address: "",
+                        session_id: SESSION_ID
+                    })
+                });
+
+                const data = await response.json();
+                botMsg.innerText = data.confirmation || "Order received!";
+            } catch (err) {
+                botMsg.innerText = "Error connecting to AI server. Please make sure the backend is running.";
+            }
+
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+    </script>
+</body>
+</html>
